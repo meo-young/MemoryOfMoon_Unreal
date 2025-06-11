@@ -9,5 +9,5 @@ UMainGameInstance::UMainGameInstance()
 
 void UMainGameInstance::Init()
 {
-	Super::Init()
+	Super::Init();
 }
