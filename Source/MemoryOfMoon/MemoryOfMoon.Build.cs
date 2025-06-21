@@ -16,13 +16,13 @@ public class MemoryOfMoon : ModuleRules
 			"InputCore", 
 			"EnhancedInput",
 			"LevelSequence",
-			"MovieScene"
+			"MovieScene",
+			"UMG",
+			"Slate", 
+			"SlateCore"
 		});
 		
 		PublicIncludePaths.AddRange(new string[] { "MemoryOfMoon" });
-		
-		// Uncomment if you are using Slate UI
-		// PrivateDependencyModuleNames.AddRange(new string[] { "Slate", "SlateCore" });
 		
 		// Uncomment if you are using online features
 		// PrivateDependencyModuleNames.Add("OnlineSubsystem");
