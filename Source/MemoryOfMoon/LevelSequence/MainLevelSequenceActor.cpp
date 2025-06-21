@@ -1,16 +1,17 @@
 #include "LevelSequence/MainLevelSequenceActor.h"
 #include "LevelSequencePlayer.h"
 #include "MemoryOfMoon.h"
+#include "Dialogue/DialogueManager.h"
 
-void AMainLevelSequenceActor::BeginPlay()
+void AMainLevelSequenceActor::PostInitializeComponents()
 {
-	Super::BeginPlay();
-
+	Super::PostInitializeComponents();
+	
 	// 등록된 레벨 시퀀스를 추출한다.
 	LevelSequence = GetSequence();
 	if (!IsValid(LevelSequence))
 	{
-		LOG(TEXT("LevelSequence Is Not Valid !"));
+		UE_LOG(Meoyoung, Error, TEXT("LevelSequence Is Not Valid !"));
 		return;
 	}
 
@@ -20,6 +21,13 @@ void AMainLevelSequenceActor::BeginPlay()
 
 	// 종료 델리게이트에 함수를 바인딩한다.
 	LevelSequencePlayer->OnFinished.AddDynamic(this, &AMainLevelSequenceActor::OnSequenceEnded);
+}
+
+void AMainLevelSequenceActor::BeginPlay()
+{
+	Super::BeginPlay();
+
+	BindToSequencePausedDelegate();
 }
 
 void AMainLevelSequenceActor::PlayLevelSequence()
@@ -66,4 +74,16 @@ void AMainLevelSequenceActor::OnSequenceEnded()
 	{
 		OnSequenceEndedDelegate.Broadcast();
 	}
+}
+
+void AMainLevelSequenceActor::BindToSequencePausedDelegate()
+{
+	UDialogueManager* DialogueManager = GetGameInstance()->GetSubsystem<UDialogueManager>();
+	if (!IsValid(DialogueManager))
+	{
+		UE_LOG(Meoyoung, Error, TEXT("DialogueManager Is Not Valid !"));
+		return;
+	}
+
+	OnSequencePausedDelegate.AddDynamic(DialogueManager, &UDialogueManager::ShowDialogue);
 }

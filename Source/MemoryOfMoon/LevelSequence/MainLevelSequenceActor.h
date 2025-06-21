@@ -17,12 +17,20 @@ class MEMORYOFMOON_API AMainLevelSequenceActor : public ALevelSequenceActor
 	GENERATED_BODY()
 
 public:
+	virtual void PostInitializeComponents() override;
 	virtual void BeginPlay() override;
 	
 public:
+	UPROPERTY(BlueprintAssignable)
 	FOnSequenceStartedDelegate OnSequenceStartedDelegate;
+
+	UPROPERTY(BlueprintAssignable)
 	FOnSequencePausedDelegate OnSequencePausedDelegate;
+
+	UPROPERTY(BlueprintAssignable)
 	FOnSequenceStoppedDelegate OnSequenceStoppedDelegate;
+
+	UPROPERTY(BlueprintAssignable)
 	FOnSequenceEndedDelegate OnSequenceEndedDelegate;
 	
 public:
@@ -43,10 +51,13 @@ public:
 	void OnSequenceEnded();
 
 private:
-	UPROPERTY(BlueprintReadWrite, meta = (AllowPrivateAccess = true))
-	ULevelSequence* LevelSequence;
+	void BindToSequencePausedDelegate();
 
-	UPROPERTY(BlueprintReadWrite, meta = (AllowPrivateAccess = true))
-	ULevelSequencePlayer* LevelSequencePlayer;
+private:
+	UPROPERTY(BlueprintReadOnly, meta = (AllowPrivateAccess = true))
+	TObjectPtr<ULevelSequence> LevelSequence = nullptr;
+
+	UPROPERTY(BlueprintReadOnly, meta = (AllowPrivateAccess = true))
+	TObjectPtr<ULevelSequencePlayer> LevelSequencePlayer = nullptr;
 	
 };
