@@ -4,9 +4,12 @@
 #include "Subsystems/GameInstanceSubsystem.h"
 #include "DialogueManager.generated.h"
 
+class UDialogueWidget;
 struct FDialogueData;
 
-UCLASS()
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnDialogueEvent);
+
+UCLASS(Blueprintable, BlueprintType)
 class MEMORYOFMOON_API UDialogueManager : public UGameInstanceSubsystem
 {
 	GENERATED_BODY()
@@ -14,15 +17,38 @@ class MEMORYOFMOON_API UDialogueManager : public UGameInstanceSubsystem
 public:
 	UDialogueManager();
 
+public:
+	virtual void Initialize(FSubsystemCollectionBase& Collection) override;
+
+public:
+	UPROPERTY(BlueprintAssignable)
+	FOnDialogueEvent OnDialogueEventDelegate;
+
+public:
+	UFUNCTION(BlueprintCallable)
+	void ShowDialogue();
+
+private:
+	void CreateDialogueWidgetInstance();
+
 private:
 	UPROPERTY()
-	UDataTable* PrologueDialogue;
+	TObjectPtr<UDialogueWidget> DialogueWidgetInstance;
+	
+	UPROPERTY()
+	TSubclassOf<UDialogueWidget> DialogueWidgetClass;
+	
+	UPROPERTY()
+	TObjectPtr<UDataTable> PrologueDialogue;
 
 	UPROPERTY()
-	UDataTable* ChapterOneDialogue;
+	TObjectPtr<UDataTable> ChapterOneDialogue;
 
 	UPROPERTY()
-	UDataTable* ChapterTwoDialogue;
+	TObjectPtr<UDataTable> ChapterTwoDialogue;
+
+	UPROPERTY()
+	uint8 CurrentDialogueCounter = 0;
 
 public:
 	FDialogueData* GetDialogueData(const uint8& ID) const;
